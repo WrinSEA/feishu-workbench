@@ -58,12 +58,6 @@ button{font-family:inherit}
 
 .note{margin:18px 16px 0;text-align:center;font-size:12px;color:var(--text3);line-height:1.8}
 
-/* 跳转方式诊断（临时） */
-.diag{margin:12px 16px 0;background:#FFF9E9;border:1px dashed #E6C07B;border-radius:14px;padding:14px 16px}
-.diag h4{font-size:13px;color:#8A6116;margin-bottom:10px}
-.diag .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.diag button,.diag a{font-size:12px;padding:9px 8px;border-radius:8px;border:1px solid #E6C07B;background:#fff;color:#8A6116;cursor:pointer;text-align:center;text-decoration:none;font-family:inherit}
-
 /* ---------- 子页面 ---------- */
 .hero{margin:12px 16px 0;padding:16px;border-radius:14px;display:flex;align-items:center;gap:14px}
 .hero .app-icon{width:52px;height:52px;border-radius:14px}
@@ -177,10 +171,9 @@ select.input{background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www
    link 字段：真实外部应用入口。点击卡片直接跳转（飞书客户端内会拉起对应应用）。
    如需改为 AppLink 拉起，把链接换成 applink.feishu.cn 协议即可。 */
 var APP_ID_GY = 'cli_a31aa82f07be1013';  // 光印巡检
+var VERSION   = 'v1.2';                  // 改版时更新，页面底部展示，便于确认缓存已刷新
 var LINKS = {
-  // 光印巡检：AppLink 打开网页应用（mode 缺省=appCenter，等同从工作台点开）
-  // 若仍打不开，备选小程序格式：
-  //   https://applink.feishu.cn/client/mini_program/open?appId=cli_a31aa82f07be1013&mode=appCenter
+  // 光印巡检：AppLink 打开网页应用（<a> 标签承载，实测可拉起；mode 缺省=appCenter）
   xuncha: 'https://applink.feishu.cn/client/web_app/open?appId=' + APP_ID_GY
 };
 var APPS = [
@@ -222,7 +215,7 @@ var state = {
 };
 
 var esc = function(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
-var note = function(){ return '<div class="note">占位演示页面 · 数据均为模拟<br>正式版本将对接真实业务系统</div>'; };
+var note = function(){ return '<div class="note">占位演示页面 · 数据均为模拟 · ' + VERSION + '<br>正式版本将对接真实业务系统</div>'; };
 
 /* ================= 页面模板 ================= */
 function navSub(title){
@@ -253,26 +246,7 @@ function pageHome(){
     '<div class="app-grid">' + cards + '</div>' +
     '<div class="announce"><div class="ic">' + hornIcon + '</div>' +
     '<div><h4>工作台上线公告</h4><p>营运、培训、报修、巡查四个业务系统入口已上线，点击上方卡片即可进入对应系统。</p></div></div>' +
-    diagSection() +
     note() + '</div>';
-}
-
-/* 临时诊断区：逐一测试应用容器内拉起光印巡检的各种方式 */
-function diagSection(){
-  var webapp = 'https://applink.feishu.cn/client/web_app/open?appId=' + APP_ID_GY;
-  var mini   = 'https://applink.feishu.cn/client/mini_program/open?appId=' + APP_ID_GY + '&mode=appCenter';
-  var scheme = 'feishu://applink/client/web_app/open?appId=' + APP_ID_GY;
-  var center = 'https://app.feishu.cn/app/' + APP_ID_GY;
-  return '<div class="diag"><h4>🔧 跳转方式诊断（临时，测完即删）</h4><div class="dgrid">' +
-    '<a href="' + webapp + '">1. a链接·webapp</a>' +
-    '<a href="' + webapp + '" target="_blank">2. a链接·新窗口</a>' +
-    '<button data-diag="location">3. JS·location.href</button>' +
-    '<button data-diag="open">4. JS·window.open</button>' +
-    '<a href="' + scheme + '">5. a链接·feishu协议</a>' +
-    '<a href="' + center + '">6. a链接·应用中心</a>' +
-    '<a href="' + mini + '">7. a链接·小程序格式</a>' +
-    '<button data-diag="iframe">8. iframe加载</button>' +
-    '</div><p style="font-size:11px;color:#B08A3E;margin-top:8px;line-height:1.6">逐个点击，记住哪个编号能拉起光印巡检，告诉我编号即可。都不行也告诉我现象（无反应/报错/白屏）。</p></div>';
 }
 
 function pageYunying(){
@@ -409,18 +383,6 @@ document.getElementById('app').addEventListener('click', function(e){
   if ((el = e.target.closest('[data-open-repair]'))) { openRepairSheet(el.dataset.cat || ''); return; }
   if ((el = e.target.closest('[data-continue]'))) { toast('演示页面：正式环境将进入课程学习'); return; }
   if ((el = e.target.closest('[data-more]')))     { toast('演示页面：功能开发中'); return; }
-  if ((el = e.target.closest('[data-diag]')))     {
-    var url = 'https://applink.feishu.cn/client/web_app/open?appId=' + APP_ID_GY;
-    if (el.dataset.diag === 'location') { window.location.href = url; }
-    if (el.dataset.diag === 'open')     { window.open(url); }
-    if (el.dataset.diag === 'iframe')   {
-      var f = document.createElement('iframe');
-      f.style.display = 'none'; f.src = url;
-      document.body.appendChild(f);
-      setTimeout(function(){ f.remove(); }, 3000);
-    }
-    return;
-  }
 });
 
 var overlayEl = document.getElementById('overlay');
