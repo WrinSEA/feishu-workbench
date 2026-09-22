@@ -171,14 +171,16 @@ select.input{background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www
    link 字段：真实外部应用入口。点击卡片直接跳转（飞书客户端内会拉起对应应用）。
    如需改为 AppLink 拉起，把链接换成 applink.feishu.cn 协议即可。 */
 var APP_ID_GY = 'cli_a31aa82f07be1013';  // 光印巡检
-var VERSION   = 'v1.2';                  // 改版时更新，页面底部展示，便于确认缓存已刷新
+var VERSION   = 'v1.3';                  // 改版时更新，页面底部展示，便于确认缓存已刷新
 var LINKS = {
   // 光印巡检：AppLink 打开网页应用（<a> 标签承载，实测可拉起；mode 缺省=appCenter）
-  xuncha: 'https://applink.feishu.cn/client/web_app/open?appId=' + APP_ID_GY
+  xuncha: 'https://applink.feishu.cn/client/web_app/open?appId=' + APP_ID_GY,
+  // 考试星：消息链接格式（token 从飞书消息中复制而来）
+  peixun: 'https://applink.feishu.cn/client/message/link/open?token=AmqyIgWOAcvnarJWSpuATNo%3D'
 };
 var APPS = [
   { id:'yunying', name:'营运系统', desc:'营运数据看板与每日待办', color:'#3370FF', weak:'#EAF0FF' },
-  { id:'peixun',  name:'培训系统', desc:'在线课程与学习进度管理', color:'#2EA121', weak:'#E8F8E5' },
+  { id:'peixun',  name:'培训系统', desc:'考试星 · 点击进入', color:'#2EA121', weak:'#E8F8E5', link:LINKS.peixun },
   { id:'baoxiu',  name:'报修系统', desc:'设备设施报修与进度跟踪', color:'#FF8800', weak:'#FFF3E6' },
   { id:'xuncha',  name:'巡查系统', desc:'光印巡检 · 点击进入', color:'#7B61FF', weak:'#F0EDFF', link:LINKS.xuncha }
 ];
