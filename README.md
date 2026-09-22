@@ -1,6 +1,48 @@
 # 飞书「工作台」应用（占位演示）
 
-一个单文件 H5 应用（`index.html`），模拟飞书移动端工作台：
+> **当前生效架构（企业 B）**：GitHub Pages 托管 `index.html` → 飞书企业自建应用（网页应用）
+> 首页指向该地址 → 页面内 AppLink 拉起光印巡检。
+> 仓库：https://github.com/WrinSEA/feishu-workbench ，线上：https://wrinsea.github.io/feishu-workbench/
+>
+> 妙搭（Miaoda）方案已弃用为正式入口：其页面链接会跳转登录（accounts.feishu.cn），
+> 被网页应用容器以 ERR_BLOCKED_BY_CSP 拦截，只能作为独立分享链接使用。
+
+## 改版流程（当前架构）
+
+```bash
+cd feishu-workbench
+# 编辑 index.html 后：
+git add index.html && git commit -m "feat: xxx" && git push
+# GitHub Pages 约 1 分钟内自动更新，自建应用无需任何改动
+```
+
+## 自建应用（网页应用）配置要点
+
+- 开放平台 → 企业自建应用「工作台」→ 网页应用 → 主页 URL 填
+  `https://wrinsea.github.io/feishu-workbench/`（移动端/桌面端都填）
+- 纯静态页无需申请任何 API 权限；改主页 URL 后需发布新版本才对已发布版本生效
+- 如国内访问 GitHub Pages 不稳，把 `index.html` 单文件换到任何静态托管
+  （公司服务器 / 腾讯云 COS 等），只需在开放平台改主页 URL，代码零改动
+
+## 外部应用跳转（AppLink）
+
+`index.html` 顶部 `LINKS` 对象控制跳转，已验证格式：
+
+```js
+var LINKS = {
+  // 网页应用格式（光印巡检已验证可用；mode 缺省=appCenter）
+  xuncha: 'https://applink.feishu.cn/client/web_app/open?appId=cli_a31aa82f07be1013'
+};
+```
+
+要点：
+- 跳转必须用 `<a>` 标签（页面里已实现）：飞书客户端对链接点击有原生路由；
+  JS `location.href` 在网页容器内不被处理会 404
+- 小程序应用用 `client/mini_program/open`，mode 合法值仅
+  `sidebar-semi / appCenter / window / window-semi`（没有 `app`）
+- `app.feishu.cn/app/cli_xxx` 是应用中心中转页，仅限对话/客户端内点击，
+  不能作为网页容器内的跳转地址
+
 
 - **首页「工作台」**：2×2 应用卡片入口 + 搜索框 + 公告位
 - **营运系统**：今日概览统计、近 7 日营收柱状图、今日待办
@@ -105,3 +147,11 @@ feishu-workbench/
 - 应用入口配置：`index.html` 中的 `APPS` 数组（名称 / 描述 / 颜色）。
 - 各子页面内容：`pageYunying` / `pagePeixun` / `pageBaoxiu` / `pageXuncha` 函数。
 - 模拟数据：`state` 对象（报修记录、巡查清单）。
+
+## 目录结构
+
+```
+feishu-workbench/
+├── index.html   # 全部页面与逻辑（单文件，无依赖）
+└── README.md
+```
