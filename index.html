@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#ffffff" />
+<title>工作台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%233370FF'/%3E%3Crect x='5' y='11' width='4' height='8' rx='1.5' fill='white'/%3E%3Crect x='10.5' y='7' width='4' height='12' rx='1.5' fill='white'/%3E%3Crect x='16' y='14' width='4' height='5' rx='1.5' fill='white'/%3E%3C/svg%3E" />
+<style>
+:root{
+  --blue:#3370FF; --blue-weak:#EAF0FF;
+  --green:#2EA121; --green-weak:#E8F8E5;
+  --orange:#D89614; --orange-weak:#FFF7E6;
+  --purple:#7B61FF; --purple-weak:#F0EDFF;
+  --red:#F54A45;
+  --bg:#F5F6F7; --card:#FFFFFF;
+  --text:#1F2329; --text2:#646A73; --text3:#8F959E;
+  --line:#E5E6EB; --fill:#F2F3F5;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#E9EBEE;color:var(--text);font-size:14px}
+#app{max-width:520px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;box-shadow:0 0 32px rgba(31,35,41,.08)}
+svg{display:block}
+button{font-family:inherit}
+
+/* ---------- 顶部导航 ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-inner{height:48px;display:flex;align-items:center;padding:0 12px;position:relative;padding-top:env(safe-area-inset-top,0px)}
+.nav-title{position:absolute;left:50%;transform:translateX(-50%);font-size:17px;font-weight:600;white-space:nowrap}
+.nav-back{display:flex;align-items:center;gap:2px;color:var(--text2);font-size:14px;background:none;border:none;cursor:pointer;padding:6px 4px 6px 0}
+.nav-back svg{width:20px;height:20px}
+
+/* ---------- 页面容器 ---------- */
+.page{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 28px);animation:pageIn .26s ease both}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------- 首页 ---------- */
+.search{margin:14px 16px 0;height:38px;border-radius:10px;background:#FFFFFF;border:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--text3);font-size:13px}
+.search svg{width:16px;height:16px;flex:none}
+.section{padding:18px 20px 8px;font-size:13px;color:var(--text3);display:flex;align-items:center;gap:7px}
+.section::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--blue)}
+.app-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:0 16px}
+.app-card{display:block;text-decoration:none;color:inherit;background:var(--card);border-radius:14px;padding:18px 16px 16px;cursor:pointer;border:1px solid rgba(31,35,41,.04);box-shadow:0 1px 2px rgba(31,35,41,.03);transition:transform .12s ease,box-shadow .12s ease;text-align:left;font-family:inherit}
+.app-card:active{transform:scale(.97)}
+.app-card:hover{box-shadow:0 4px 16px rgba(31,35,41,.08)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between}
+.card-head .go{width:18px;height:18px;color:#C9CDD4}
+.app-card h3{font-size:15px;margin:12px 0 4px}
+.app-card p{font-size:12px;color:var(--text3);line-height:1.5}
+.app-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.app-icon svg{width:24px;height:24px}
+
+.announce{margin:12px 16px 0;background:linear-gradient(120deg,#EAF0FF 0%,#F0EDFF 100%);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.announce .ic{flex:none;width:36px;height:36px;border-radius:10px;background:rgba(51,112,255,.14);display:flex;align-items:center;justify-content:center}
+.announce .ic svg{width:18px;height:18px}
+.announce h4{font-size:13px;margin-bottom:3px}
+.announce p{font-size:12px;color:var(--text2);line-height:1.6}
+
+.note{margin:18px 16px 0;text-align:center;font-size:12px;color:var(--text3);line-height:1.8}
+
+/* ---------- 子页面 ---------- */
+.hero{margin:12px 16px 0;padding:16px;border-radius:14px;display:flex;align-items:center;gap:14px}
+.hero .app-icon{width:52px;height:52px;border-radius:14px}
+.hero .app-icon svg{width:26px;height:26px}
+.hero h2{font-size:17px}
+.hero p{font-size:12px;margin-top:4px;color:var(--text2)}
+
+.card{background:var(--card);border-radius:14px;margin:12px 16px 0;padding:16px;box-shadow:0 1px 2px rgba(31,35,41,.03)}
+.card-title{font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.card-title .more{font-size:12px;color:var(--text3);font-weight:400;cursor:pointer}
+
+/* 统计块 */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{background:#F7F8FA;border-radius:10px;padding:12px 14px}
+.stat .k{font-size:12px;color:var(--text3)}
+.stat .v{font-size:20px;font-weight:700;margin-top:6px;letter-spacing:-.3px}
+.stat .d{font-size:11px;margin-top:4px}
+.up{color:var(--green)} .down{color:var(--red)}
+.strip{display:flex;margin-top:14px;background:#F7F8FA;border-radius:10px;padding:14px 0}
+.strip>div{flex:1;text-align:center;border-right:1px solid var(--line)}
+.strip>div:last-child{border-right:0}
+.strip .v{font-size:18px;font-weight:700}
+.strip .k{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* 柱状图 */
+.chart{display:flex;align-items:flex-end;gap:10px;height:112px;margin-top:16px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.chart .bar{display:block;width:100%;max-width:26px;min-height:4px;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,#6E9BFF,#3370FF);opacity:.9}
+.chart .col.today .bar{background:linear-gradient(180deg,#FFB566,#FF8800)}
+.chart .lab{font-size:11px;color:var(--text3)}
+
+/* 进度条 */
+.pbar{height:8px;border-radius:4px;background:var(--fill);overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#6E9BFF,var(--blue));transition:width .3s ease}
+.pct-line{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}
+.pct-line .pct{font-weight:700;color:var(--blue);font-size:16px}
+.pct-line .sub{font-size:12px;color:var(--text3)}
+
+/* 通用列表行 */
+.todo{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--fill);font-size:14px}
+.todo:last-child{border-bottom:0;padding-bottom:2px}
+.todo .txt{flex:1}
+.tag{font-size:11px;padding:2px 8px;border-radius:4px;flex:none}
+.badge{font-size:11px;padding:2.5px 8px;border-radius:4px;flex:none}
+.st-wait{color:var(--orange);background:var(--orange-weak)}
+.st-doing{color:var(--blue);background:var(--blue-weak)}
+.st-done{color:var(--green);background:var(--green-weak)}
+
+/* 课程 */
+.course{padding:14px 0;border-bottom:1px solid var(--fill)}
+.course:last-child{border-bottom:0}
+.course .top{display:flex;align-items:center;gap:10px}
+.course .t{font-size:14px;font-weight:500;flex:1}
+.mini-btn{flex:none;font-size:12px;color:var(--blue);background:var(--blue-weak);border:none;border-radius:6px;padding:5px 10px;cursor:pointer}
+.mini-btn:active{opacity:.8}
+.course .meta{font-size:11px;color:var(--text3);margin:8px 0 7px}
+
+/* 报修 */
+.rep{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--fill)}
+.rep:last-child{border-bottom:0}
+.rep .info{flex:1;min-width:0}
+.rep .t{font-size:14px;font-weight:500}
+.rep .m{font-size:12px;color:var(--text3);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{padding:7px 14px;border-radius:16px;background:#fff;border:1px solid var(--line);font-size:13px;color:var(--text2);cursor:pointer}
+.chip:active{background:var(--fill)}
+
+/* 巡查清单 */
+.chk{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--fill);cursor:pointer;align-items:flex-start}
+.chk:last-child{border-bottom:0}
+.chk .box{width:21px;height:21px;border:1.5px solid #C9CDD4;border-radius:7px;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.chk .box svg{width:13px;height:13px}
+.chk.done .box{background:var(--blue);border-color:var(--blue)}
+.chk .txt{font-size:14px}
+.chk.done .txt{color:var(--text3);text-decoration:line-through}
+.chk .loc{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* 按钮 */
+.btn{width:100%;height:46px;border-radius:12px;border:none;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:active{background:#2B5FE0}
+.btn-block{margin:14px 16px 0;width:calc(100% - 32px)}
+
+/* 弹层 */
+#overlay:empty{display:none}
+.mask{position:fixed;inset:0;background:rgba(31,35,41,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.sheet{width:100%;max-width:520px;background:#fff;border-radius:16px 16px 0 0;padding:18px 16px calc(env(safe-area-inset-bottom,0px) + 16px);animation:sheetUp .26s cubic-bezier(.32,.72,.35,1);max-height:82vh;overflow:auto}
+@keyframes sheetUp{from{transform:translateY(40%)}to{transform:none}}
+.sheet h3{font-size:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.sheet-close{background:var(--fill);border:none;width:28px;height:28px;border-radius:50%;color:var(--text2);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:13px;color:var(--text2);margin-bottom:7px}
+.input,textarea.input,select.input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;font-family:inherit;background:#fff;color:var(--text);outline:none;-webkit-appearance:none;appearance:none}
+.input:focus{border-color:var(--blue)}
+textarea.input{resize:none;height:78px;line-height:1.6}
+select.input{background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238F959E' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>") no-repeat right 12px center}
+
+/* 轻提示 */
+.toast{position:fixed;left:50%;bottom:16%;transform:translateX(-50%);background:rgba(31,35,41,.88);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:300;animation:fadeIn .2s ease;pointer-events:none;max-width:80%;text-align:center}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="overlay"></div>
+<script>
+(function(){
+'use strict';
+
+/* ================= 配置：四个应用入口 =================
+   link 字段：真实外部应用入口。点击卡片直接跳转（飞书客户端内会拉起对应应用）。
+   如需改为 AppLink 拉起，把链接换成 applink.feishu.cn 协议即可。 */
+var LINKS = {
+  // 光印巡检：AppLink 打开网页应用（mode 缺省=appCenter，等同从工作台点开）
+  // 若仍打不开，备选小程序格式：
+  //   https://applink.feishu.cn/client/mini_program/open?appId=cli_a31aa82f07be1013&mode=appCenter
+  xuncha: 'https://applink.feishu.cn/client/web_app/open?appId=cli_a31aa82f07be1013'
+};
+var APPS = [
+  { id:'yunying', name:'营运系统', desc:'营运数据看板与每日待办', color:'#3370FF', weak:'#EAF0FF' },
+  { id:'peixun',  name:'培训系统', desc:'在线课程与学习进度管理', color:'#2EA121', weak:'#E8F8E5' },
+  { id:'baoxiu',  name:'报修系统', desc:'设备设施报修与进度跟踪', color:'#FF8800', weak:'#FFF3E6' },
+  { id:'xuncha',  name:'巡查系统', desc:'光印巡检 · 点击进入', color:'#7B61FF', weak:'#F0EDFF', link:LINKS.xuncha }
+];
+
+var ICONS = {
+  yunying:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-7"/><path d="M10 20V6"/><path d="M16 20v-9"/><path d="M22 20H2"/></svg>',
+  peixun:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5"/><path d="M22 9v5"/></svg>',
+  baoxiu:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+  xuncha:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>'
+};
+
+var chevRight = '<svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
+var extIcon   = '<svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
+var chevLeft  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>';
+var searchIcon= '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>';
+var hornIcon  = '<svg viewBox="0 0 24 24" fill="none" stroke="#3370FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+var checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
+
+/* ================= 占位数据 ================= */
+var state = {
+  repairs: [
+    { title:'3F 会议室空调不制冷', cat:'空调', loc:'3F · 会议室A', status:'doing', time:'09-20 14:32' },
+    { title:'大堂东门感应门开合异常', cat:'设备', loc:'1F · 大堂东门', status:'wait',  time:'09-21 09:10' },
+    { title:'2F 茶水间水龙头漏水', cat:'水电', loc:'2F · 茶水间', status:'done',  time:'09-16 11:05' }
+  ],
+  inspection: [
+    { t:'消防通道及安全出口检查', loc:'全楼 · 各楼层', done:true },
+    { t:'灭火器压力表状态检查', loc:'全楼 · 灭火器点位', done:true },
+    { t:'监控摄像头运行状态巡检', loc:'B1 · 中控室', done:true },
+    { t:'电梯机房运行巡检', loc:'顶层 · 电梯机房', done:false },
+    { t:'配电房温湿度记录', loc:'B1 · 配电房', done:false },
+    { t:'停车场照明及标识检查', loc:'B1/B2 · 停车场', done:false }
+  ]
+};
+
+var esc = function(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+var note = function(){ return '<div class="note">占位演示页面 · 数据均为模拟<br>正式版本将对接真实业务系统</div>'; };
+
+/* ================= 页面模板 ================= */
+function navSub(title){
+  return '<nav class="nav"><div class="nav-inner">' +
+    '<button class="nav-back" data-back>' + chevLeft + '<span>工作台</span></button>' +
+    '<div class="nav-title">' + title + '</div></div></nav>';
+}
+function hero(app){
+  return '<div class="hero" style="background:' + app.weak + '">' +
+    '<div class="app-icon" style="background:' + app.color + '">' + ICONS[app.id] + '</div>' +
+    '<div><h2>' + app.name + '</h2><p>' + app.desc + ' · 占位演示</p></div></div>';
+}
+function app(id){ for (var i=0;i<APPS.length;i++) if (APPS[i].id===id) return APPS[i]; }
+
+function pageHome(){
+  var cards = APPS.map(function(a){
+    var head = '<div class="card-head"><div class="app-icon" style="background:' + a.color + '">' + ICONS[a.id] + '</div>' + (a.link ? extIcon : chevRight) + '</div>';
+    var body = '<h3>' + a.name + '</h3><p>' + a.desc + '</p>';
+    // 外部真实应用用 <a> 标签：飞书客户端对链接点击有原生拦截，可正确路由 AppLink 拉起目标应用
+    // （JS location.href 在网页容器内不会被客户端处理，会 404）
+    if (a.link) return '<a class="app-card" href="' + a.link + '">' + head + body + '</a>';
+    return '<button class="app-card" data-go="' + a.id + '">' + head + body + '</button>';
+  }).join('');
+  return '<div class="page">' +
+    '<nav class="nav"><div class="nav-inner"><div class="nav-title">工作台</div></div></nav>' +
+    '<div class="search">' + searchIcon + '<span>搜索应用、功能</span></div>' +
+    '<div class="section">常用应用</div>' +
+    '<div class="app-grid">' + cards + '</div>' +
+    '<div class="announce"><div class="ic">' + hornIcon + '</div>' +
+    '<div><h4>工作台上线公告</h4><p>营运、培训、报修、巡查四个业务系统入口已上线，点击上方卡片即可进入对应系统。</p></div></div>' +
+    note() + '</div>';
+}
+
+function pageYunying(){
+  var stats = [
+    ['今日营收','¥48,520','+12.4%','up'],
+    ['今日订单','1,286 单','+5.2%','up'],
+    ['今日客流','3,208 人','+8.7%','up'],
+    ['会员新增','46 人','-2.1%','down']
+  ].map(function(s){ return '<div class="stat"><div class="k">' + s[0] + '</div><div class="v">' + s[1] + '</div><div class="d ' + s[3] + '">' + s[2] + ' 较昨日</div></div>'; }).join('');
+  var bars = [58,74,49,88,63,82,100], labs = ['周一','周二','周三','周四','周五','周六','周日'];
+  var chart = bars.map(function(b,i){
+    return '<div class="col' + (i===6?' today':'') + '"><i class="bar" style="height:' + b + '%"></i><span class="lab">' + labs[i] + '</span></div>';
+  }).join('');
+  var todos = [
+    ['审批 · 中秋物料采购申请','审批','st-wait'],
+    ['提交本周营运周报','待办','st-doing'],
+    ['跟进 3F 门店陈列调整','进行中','st-doing'],
+    ['月度盘点数据复核','待办','st-wait']
+  ].map(function(t){ return '<div class="todo"><span class="txt">' + t[0] + '</span><span class="tag ' + t[2] + '">' + t[1] + '</span></div>'; }).join('');
+  return '<div class="page">' + navSub('营运系统') + hero(app('yunying')) +
+    '<div class="card"><div class="card-title">今日概览<span class="more" data-more>详情</span></div><div class="stat-grid">' + stats + '</div></div>' +
+    '<div class="card"><div class="card-title">近 7 日营收趋势</div><div class="chart">' + chart + '</div></div>' +
+    '<div class="card"><div class="card-title">今日待办</div><div style="margin-top:4px">' + todos + '</div></div>' +
+    note() + '</div>';
+}
+
+function pagePeixun(){
+  var strip = [
+    ['12','累计课程'], ['7','已完成'], ['26.5h','累计学习时长']
+  ].map(function(s){ return '<div><div class="v">' + s[0] + '</div><div class="k">' + s[1] + '</div></div>'; }).join('');
+  var courses = [
+    { t:'新员工入职安全培训', meta:'共 6 节 · 已全部完成', p:100, btn:'复习' },
+    { t:'服务标准与礼仪规范', meta:'共 8 节 · 已学 5 节', p:62, btn:'继续学习' },
+    { t:'消防应急演练课程', meta:'共 5 节 · 已学 1 节', p:20, btn:'继续学习' },
+    { t:'设备巡检操作指引', meta:'共 4 节 · 未开始', p:0, btn:'开始学习' }
+  ].map(function(c){
+    return '<div class="course"><div class="top"><span class="t">' + c.t + '</span>' +
+      '<button class="mini-btn" data-continue>' + c.btn + '</button></div>' +
+      '<div class="meta">' + c.meta + '</div><div class="pbar"><i style="width:' + c.p + '%"></i></div></div>';
+  }).join('');
+  return '<div class="page">' + navSub('培训系统') + hero(app('peixun')) +
+    '<div class="card"><div class="card-title">我的学习<span class="more" data-more>学习排行</span></div><div class="strip">' + strip + '</div></div>' +
+    '<div class="card"><div class="card-title">进行中的课程</div>' + courses + '</div>' +
+    '<div class="card"><div class="card-title">培训公告</div><div class="todo" style="margin-top:4px"><span class="txt">10 月培训计划已发布：消防安全专题培训（全员必修）</span><span class="tag st-doing">新</span></div></div>' +
+    note() + '</div>';
+}
+
+function pageBaoxiu(){
+  var cats = ['水电','空调','网络','电梯','设备','其他'];
+  var chips = '<div class="chips">' + cats.map(function(c){
+    return '<button class="chip" data-open-repair data-cat="' + c + '">' + c + '</button>';
+  }).join('') + '</div>';
+  var list = state.repairs.map(function(r){
+    var st = { wait:['待受理','st-wait'], doing:['处理中','st-doing'], done:['已完成','st-done'] }[r.status];
+    return '<div class="rep"><div class="info"><div class="t">' + esc(r.title) + '</div>' +
+      '<div class="m"><span>' + esc(r.loc) + '</span><span>' + esc(r.cat) + '</span><span>' + r.time + '</span></div></div>' +
+      '<span class="badge ' + st[1] + '">' + st[0] + '</span></div>';
+  }).join('');
+  return '<div class="page">' + navSub('报修系统') + hero(app('baoxiu')) +
+    '<button class="btn btn-primary btn-block" data-open-repair>＋ 发起报修</button>' +
+    '<div class="card"><div class="card-title">快捷报修</div>' + chips + '</div>' +
+    '<div class="card"><div class="card-title">报修记录<span class="more" data-more>全部</span></div><div style="margin-top:2px">' + list + '</div></div>' +
+    note() + '</div>';
+}
+
+function pageXuncha(){
+  var items = state.inspection;
+  var done = items.filter(function(i){ return i.done; }).length;
+  var pct = Math.round(done / items.length * 100);
+  var list = items.map(function(it,i){
+    return '<div class="chk' + (it.done?' done':'') + '" data-insp="' + i + '">' +
+      '<span class="box">' + (it.done?checkIcon:'') + '</span>' +
+      '<div><div class="txt">' + it.t + '</div><div class="loc">' + it.loc + '</div></div></div>';
+  }).join('');
+  return '<div class="page">' + navSub('巡查系统') + hero(app('xuncha')) +
+    '<div class="card"><div class="card-title">今日巡查进度<span class="more">' + done + '/' + items.length + ' 已完成</span></div>' +
+    '<div class="pbar" style="margin-top:14px"><i style="width:' + pct + '%"></i></div>' +
+    '<div class="pct-line"><span class="pct">' + pct + '%</span><span class="sub">巡查点共 ' + items.length + ' 处 · 发现异常 0 项</span></div></div>' +
+    '<div class="card"><div class="card-title">巡查任务清单<span class="more" data-more>历史记录</span></div><div style="margin-top:2px">' + list + '</div></div>' +
+    note() + '</div>';
+}
+
+/* ================= 路由与渲染 ================= */
+var PAGES  = { home:pageHome, yunying:pageYunying, peixun:pagePeixun, baoxiu:pageBaoxiu, xuncha:pageXuncha };
+var TITLES = { home:'工作台', yunying:'营运系统', peixun:'培训系统', baoxiu:'报修系统', xuncha:'巡查系统' };
+var current = 'home';
+
+function render(keepScroll){
+  var id = (location.hash || '#/home').replace(/^#\//,'') || 'home';
+  current = PAGES[id] ? id : 'home';
+  document.title = TITLES[current];
+  document.getElementById('app').innerHTML = PAGES[current]();
+  if (!keepScroll) window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', function(){ render(false); });
+
+/* ================= 交互 ================= */
+var toastTimer;
+function toast(msg){
+  var old = document.querySelector('.toast');
+  if (old) old.remove();
+  var el = document.createElement('div');
+  el.className = 'toast'; el.textContent = msg;
+  document.body.appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.remove(); }, 2000);
+}
+
+function closeOverlay(){ document.getElementById('overlay').innerHTML = ''; }
+
+function openRepairSheet(preCat){
+  var cats = ['水电','空调','网络','电梯','设备','其他'];
+  var opts = cats.map(function(c){ return '<option' + (c===preCat?' selected':'') + '>' + c + '</option>'; }).join('');
+  document.getElementById('overlay').innerHTML =
+    '<div class="mask"><div class="sheet">' +
+    '<h3>发起报修<button class="sheet-close" data-close-sheet aria-label="关闭">✕</button></h3>' +
+    '<form id="repair-form">' +
+    '<div class="field"><label>报修类型</label><select class="input" name="cat">' + opts + '</select></div>' +
+    '<div class="field"><label>报修位置</label><input class="input" name="loc" placeholder="如：3F · 会议室A" required maxlength="30"></div>' +
+    '<div class="field"><label>问题描述</label><textarea class="input" name="desc" placeholder="请简要描述故障情况（将作为报修标题展示）" required maxlength="60"></textarea></div>' +
+    '<button class="btn btn-primary" type="submit">提交报修</button></form></div></div>';
+}
+
+document.getElementById('app').addEventListener('click', function(e){
+  var el;
+  if ((el = e.target.closest('[data-go]')))       { location.hash = '#/' + el.dataset.go; return; }
+  if ((el = e.target.closest('[data-back]')))     { location.hash = '#/home'; return; }
+  if ((el = e.target.closest('[data-insp]')))     {
+    var i = +el.dataset.insp;
+    state.inspection[i].done = !state.inspection[i].done;
+    render(true);
+    return;
+  }
+  if ((el = e.target.closest('[data-open-repair]'))) { openRepairSheet(el.dataset.cat || ''); return; }
+  if ((el = e.target.closest('[data-continue]'))) { toast('演示页面：正式环境将进入课程学习'); return; }
+  if ((el = e.target.closest('[data-more]')))     { toast('演示页面：功能开发中'); return; }
+});
+
+var overlayEl = document.getElementById('overlay');
+overlayEl.addEventListener('click', function(e){
+  if (e.target.closest('[data-close-sheet]')) { closeOverlay(); return; }
+  if (!e.target.closest('.sheet')) closeOverlay();
+});
+overlayEl.addEventListener('submit', function(e){
+  if (e.target.id !== 'repair-form') return;
+  e.preventDefault();
+  var f = e.target, now = new Date(), p = function(n){ return (n<10?'0':'') + n; };
+  state.repairs.unshift({
+    title: f.desc.value.trim(),
+    cat:   f.cat.value,
+    loc:   f.loc.value.trim(),
+    status:'wait',
+    time:  (now.getMonth()+1) + '-' + p(now.getDate()) + ' ' + p(now.getHours()) + ':' + p(now.getMinutes())
+  });
+  closeOverlay();
+  if (current !== 'baoxiu') location.hash = '#/baoxiu'; else render(false);
+  toast('报修已提交（占位演示）');
+});
+
+render(false);
+})();
+</script>
+</body>
+</html>
