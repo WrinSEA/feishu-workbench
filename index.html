@@ -170,13 +170,15 @@ select.input{background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www
 /* ================= 配置：四个应用入口 =================
    link 字段：真实外部应用入口。点击卡片直接跳转（飞书客户端内会拉起对应应用）。
    如需改为 AppLink 拉起，把链接换成 applink.feishu.cn 协议即可。 */
-var APP_ID_GY = 'cli_a31aa82f07be1013';  // 光印巡检
-var VERSION   = 'v1.3';                  // 改版时更新，页面底部展示，便于确认缓存已刷新
+var APP_ID_KSX = 'cli_9f374bec8d77d00d';  // 考试星
+var APP_ID_GY  = 'cli_a31aa82f07be1013';  // 光印巡检
+var VERSION    = 'v1.4';                  // 改版时更新，页面底部展示，便于确认缓存已刷新
 var LINKS = {
   // 光印巡检：AppLink 打开网页应用（<a> 标签承载，实测可拉起；mode 缺省=appCenter）
   xuncha: 'https://applink.feishu.cn/client/web_app/open?appId=' + APP_ID_GY,
-  // 考试星：消息链接格式（token 从飞书消息中复制而来）
-  peixun: 'https://applink.feishu.cn/client/message/link/open?token=AmqyIgWOAcvnarJWSpuATNo%3D'
+  // 考试星：同样用 web_app 协议拉起（勿用消息链接 token，那会打开会话；也勿直连
+  // v.kaoshixing.com，会绕开飞书应用容器的免登上下文）
+  peixun: 'https://applink.feishu.cn/client/web_app/open?appId=' + APP_ID_KSX
 };
 var APPS = [
   { id:'yunying', name:'营运系统', desc:'营运数据看板与每日待办', color:'#3370FF', weak:'#EAF0FF' },
